@@ -1,0 +1,27 @@
+<div class="link-list-section">
+  <ul class="menu">
+    {% for link in section.settings.menu.links %}
+      <li>
+        <a href="{{ link.url }}">{{ link.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "Link List",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Link List"
+    }
+  ]
+}
+{% endschema %}
