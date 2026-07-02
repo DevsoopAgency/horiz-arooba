@@ -17,13 +17,13 @@
         "announcement_BxgCk9": {
           "type": "_announcement",
           "settings": {
-            "text": "Welcome to our store",
+            "text": "<strong>Welcome to our store</strong>",
             "link": "",
-            "font": "var(--font-subheading--family)",
-            "font_size": "0.75rem",
+            "font": "var(--font-heading--family)",
+            "font_size": "1.5rem",
             "weight": "",
-            "letter_spacing": "normal",
-            "case": "none",
+            "letter_spacing": "loose",
+            "case": "uppercase",
             "text_color": ""
           },
           "blocks": {}
@@ -61,14 +61,14 @@
           "static": true,
           "settings": {
             "menu": "main-menu",
-            "background_color": "{{ settings.color_palette.background }}",
-            "text_color": "",
-            "type_font_primary_size": "0.875rem",
+            "background_color": "{{ settings.color_palette.foreground }}",
+            "text_color": "{{ settings.color_palette.foreground }}",
+            "type_font_primary_size": "1rem",
             "menu_font_style": "inverse",
-            "type_font_primary_link": "body",
-            "type_case_primary_link": "none",
+            "type_font_primary_link": "subheading",
+            "type_case_primary_link": "uppercase",
             "menu_style": "featured_products",
-            "featured_products_aspect_ratio": "4 / 5",
+            "featured_products_aspect_ratio": "adapt",
             "featured_collections_aspect_ratio": "16 / 9",
             "image_border_radius": 0,
             "navigation_bar": false,
@@ -82,7 +82,7 @@
         }
       },
       "settings": {
-        "logo_position": "left",
+        "logo_position": "center",
         "menu_position": "left",
         "menu_row": "top",
         "customer_account_menu": "customer-account-main-menu",
@@ -93,7 +93,7 @@
         "country_selector_style": false,
         "show_language": true,
         "localization_font": "heading",
-        "localization_font_size": "0.875rem",
+        "localization_font_size": "1.125rem",
         "localization_position": "right",
         "localization_row": "top",
         "section_width": "page-width",
@@ -102,7 +102,7 @@
         "divider_width": 0,
         "divider_size": "page-width",
         "divider_color": "",
-        "border_width": 0,
+        "border_width": 4.5,
         "bottom_border_color": "",
         "actions_display_style": "icon",
         "actions_font_size": "0.875rem",
@@ -131,7 +131,7 @@
       "name": "Featured Products",
       "settings": {
         "heading": "Featured Products",
-        "collection": "automated-collection",
+        "collection": "frontpage",
         "products_to_show": 4
       }
     }

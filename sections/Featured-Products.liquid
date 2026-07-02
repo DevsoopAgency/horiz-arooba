@@ -8,12 +8,112 @@
         <a href="{{ product.url }}">
           <img src="{{ product.featured_image | image_url: width: 400 }}" alt="{{ product.title }}">
           <h3>{{ product.title }}</h3>
-          <p>{{ product.price | money }}</p>
+          <p class="price">
+  {% if product.compare_at_price > product.price %}
+    <span class="price-compare">{{ product.compare_at_price | money }}</span>
+    <span class="price-sale">{{ product.price | money }}</span>
+  {% else %}
+    <span class="price-sale">{{ product.price | money }}</span>
+  {% endif %}
+</p>
         </a>
       </div>
     {% endfor %}
   </div>
 </div>
+<style>
+  .featured-products-section {
+    padding: 60px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .featured-products-section h2 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+
+  .featured-products-section h2::after {
+    content: "";
+    display: block;
+    width: 48px;
+    height: 4px;
+    background-color: #a8763e;
+    margin-top: 12px;
+    margin-bottom: 32px;
+  }
+
+  .featured-products-section .product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+  }
+
+  .featured-products-section .product-card {
+    background: #f7f6f3;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .featured-products-section .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .featured-products-section .product-card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+
+  .featured-products-section .product-card:hover img {
+    transform: scale(1.05);
+  }
+
+  .featured-products-section .product-card h3 {
+    font-size: 15px;
+    font-weight: 500;
+    margin: 14px 16px 4px 16px;
+    color: #1a1a1a;
+  }
+
+  .featured-products-section .product-card p {
+    font-size: 16px;
+    font-weight: 700;
+    color: rgb(174, 109, 36);
+    margin: 0 16px 16px 16px;
+  }
+
+  .featured-products-section .price-compare {
+    text-decoration: line-through;
+    color: #999;
+    margin-right: 8px;
+    font-size: 14px;
+  }
+
+  .featured-products-section .price-sale {
+    color: #000;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  @media (max-width: 749px) {
+    .featured-products-section .product-grid {
+      grid-template-columns: repeat(1, 1fr);
+    }
+
+    .featured-products-section h2 {
+      font-size: 26px;
+    }
+  }
+</style>
 {% schema %}
 {
   "name": "Featured Products",
@@ -45,4 +145,4 @@
     }
   ]
 }
-    {% endschema %}
+{% endschema %}
