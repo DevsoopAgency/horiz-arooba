@@ -1,0 +1,547 @@
+{% comment %}
+  sections/liquid-playground.liquid
+
+  Each part has been commented out above it so it's easy to scan through and
+  check off against the list.
+{% endcomment %}
+
+<div class="liquid-playground">
+
+  <h1>Liquid Playground</h1>
+ 
+{% comment %} 1. BASICS {% endcomment %}
+  
+<h2>1.Basics</h2>
+
+  {% comment %} HANDLE {% endcomment %}
+  {% if product %}
+    <p>Product handle : {{ product.handle }}</p>
+  {% else %}
+    <p>Page handle: {{ page.handle | default: "no page object here, this is just the section preview" }}</p>
+  {% endif %}
+  <p>
+     handle is like the title lowercased, spaces insteadof dashes, and
+    special characters can also be  stripped
+  </p>
+
+  {% comment %} LOGICAL OPERATORS {% endcomment %}
+  {% assign num_a = 10 %}
+  {% assign num_b = 5 %}
+
+  {% if num_a == 10 %}
+    <p>num_a == 10 is true</p>
+  {% endif %}
+
+  {% if num_a != num_b %}
+    <p>num_a != num_b is true</p>
+  {% endif %}
+
+  {% if num_a > num_b %}
+     <p>num_a > num_b is true</p>
+  {% endif %}
+
+  {% if num_b < num_a %}
+    <p>num_b < num_a is true</p>
+  {% endif %}
+
+{% if num_a >= 10 %}
+<p>num_a >= 10 is true</p>
+  {% endif %}
+
+  {% if num_b <= 5 %}
+    <p>num_b <= 5 is true</p>
+  {% endif %}
+
+  {% if num_a > 0 and num_b > 0 %}
+    <p>num_a and num_b are both positive, "and" works</p>
+  {% endif %}
+
+  {% if num_a == 999 or num_b == 5 %}
+    <p>one of these is true, "or" works</p>
+  {% endif %}
+
+  {% assign my_string_for_contains = "hello there" %}
+  {% if my_string_for_contains contains "there" %}
+    <p>string contains "there" , "contains" works</p>
+  {% endif %}
+
+  {% comment %} DECLARING VARIABLES {% endcomment %}
+   {% assign my_string = "just a string" %}
+   {% assign my_number = 42 %}
+  {% assign my_boolean = true %}
+  <p>String: {{ my_string }} | Number: {{ my_number }} | Boolean: {{ my_boolean }}</p>
+
+  {% comment %} NIL / TRUTHY VS FALSY {% endcomment %}
+  {% assign nothing_here = nil %}
+  {% if nothing_here %}
+     <p>this should not print</p>
+    {% else %}
+    <p>nothing_here is nil, so it's falsy, this is the else branch</p>
+  {% endif %}
+
+  {% if my_boolean %}
+    <p>my_boolean is true so it's truthy, this will print</p>
+  {% endif %}
+
+  {% comment %} LOOP OVER AN ARRAY {% endcomment %}
+  {% if product %}
+    <ul>
+      {% for tag in product.tags %}
+        <li>{{ tag }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    {% assign fake_tags = "red, blue, green" | split: ", " %}
+    <ul>
+      {% for tag in fake_tags %}
+        <li>{{ tag }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% comment %} WHITESPACE CONTROL {% endcomment %}
+  <p>Without the whitespace control :</p>
+  <div class="no-whitespace-control">
+  {% for i in (1..3) %}
+    {{ i }}
+  {% endfor %}
+  </div>
+
+  <p>With whitespace control (view source, this one is way cleaner):</p>
+  <div class="with-whitespace-control">
+  {%- for i in (1..3) -%}
+    {{ i }}
+  {%-  endfor  -%}
+  </div>
+{% comment %} 2. CONDITIONAL AND ITERATION TAGS {% endcomment %}
+ 
+ <h2>2. Conditional and Iteration Tags</h2>
+
+  {% comment %} IF / ELSIF / ELSE {% endcomment %}
+  {% assign grade = 75 %}
+  {% if grade >= 90 %}
+    <p>Grade: A</p>
+  {% elsif grade >= 70 %}
+    <p>Grade: B</p>
+  {% else %}
+    <p>Grade: C or below</p>
+  {% endif %}
+
+  {% comment %} UNLESS {% endcomment %}
+  {% unless cart.item_count > 0 %}
+    <p>Cart is empty (unless tag)</p>
+  {% else %}
+    <p> theCart has stuff in it (unless tag, else branch)</p>
+  {% endunless %}
+
+  {% comment %} CASE / WHEN {% endcomment %}
+  {% assign day = "tuesday" %}
+  {% case day %}
+    {% when "monday" %}
+      <p>ugh, monday</p>
+    {% when "tuesday" %}
+      <p>it's tuesday</p>
+    {% when "friday" %}
+      <p>finally friday</p>
+    {% else %}
+      <p>some other day</p>
+  {% endcase %}
+
+  {% comment %} FOR WITH ELSE FOR EMPTY COLLECTION {% endcomment %}
+  {% assign empty_list = "" | split: "," %}
+  {% for item in empty_list %}
+    <p>{{ item }}</p>
+  {% else %}
+    <p>this list was empty, so the for-else was involved</p>
+  {% endfor %}
+
+  {% comment %} BREAK AND CONTINUE {% endcomment %}
+  <p>Loop 1 to 10, skip 5, stop at 8:</p>
+  <ul>
+    {% for i in (1..10) %}
+      {% if i == 5 %}
+        {% continue %}
+      {% endif %}
+      {% if i == 8 %}
+        {% break %}
+      {% endif %}
+      <li>{{ i }}</li>
+    {% endfor %}
+  </ul>
+
+  {% comment %} CYCLE {% endcomment %}
+  <ul>
+    {% for i in (1..6) %}
+      <li class="{% cycle 'row-odd', 'row-even' %}">Row {{ i }}</li>
+    {% endfor %}
+  </ul>
+
+  {% comment %} PAGINATE {% endcomment %}
+  {% if collections.all.products.size > 0 %}
+    {% paginate collections.all.products by 4 %}
+      <ul>
+        {% for prod in collections.all.products %}
+          <li>{{ prod.title }}</li>
+        {% endfor %}
+      </ul>
+      <p>{{ paginate.previous.title }} {{ paginate.next.title }}</p>
+    {% endpaginate %}
+  {% else %}
+    <p>no products found to paginate, but the tag is set up above</p>
+  {% endif %}
+
+  {% comment %} TABLEROW {% endcomment %}
+  <table>
+    <tbody>
+      {% tablerow i in (1..6) cols: 3 %}
+        Cell {{ i }}
+      {% endtablerow %}
+    </tbody>
+  </table>
+{% comment %} 3. HTML AND THEME TAGS {% endcomment %}
+ <h2>3. HTML and Theme Tags</h2>
+
+  {% comment %} FORM {% endcomment %}
+  {% form 'contact' %}
+    <label for="playground-email">Email</label>
+    <input type="email" name="contact[email]" id="playground-email">
+    <label for="playground-message">Message</label>
+    <textarea name="contact[body]" id="playground-message"></textarea>
+    <button type="submit">Send</button>
+    {% if form.errors %}
+      <p>{{ form.errors | default_errors }}</p>
+    {% endif %}
+  {% endform %}
+
+  {% comment %} RENDER A SNIPPET {% endcomment %}
+  {% render 'liquid-demo', message: 'hey from the section' %}
+
+  {% comment %} SECTION TAG {% endcomment %}
+  {% comment %}
+    Not calling {% section %} here on purpose. It's used to pull in a whole
+    other section (usually from a template/theme.liquid), and Shopify doesn't
+    allow nesting sections inside sections, that's what render/snippets are
+    for. Leaving this as a note instead of breaking the page.
+  {% endcomment %}
+
+
+ 
+  {% comment %} 4.SYNTAX AND VARIABLE TGS {% endcomment %}
+  
+<h2>4. Syntax and Variable Tags</h2>
+
+  {% comment %}
+    this one whole block is just a note to myself
+   {% endcomment %}
+
+  {% comment %} LIQUID TAG {% endcomment %}
+  {% liquid
+    assign liquid_tag_test = "built with the liquid tag"
+    assign liquid_tag_number = 5
+    assign liquid_tag_number = liquid_tag_number | plus: 5
+  %}
+  <p>{{ liquid_tag_test }}, number ended up as {{ liquid_tag_number }}</p>
+
+  {% comment %} RAW {% endcomment %}
+  <p> the loop as a litteral text , not the rendered one:</p>
+  {% raw %}
+    {% for product in collection.products %}
+      {{ product.title }}
+    {% endfor %}
+  {% endraw %}
+
+  {% comment %} ASSIGN {% endcomment %}
+  {% assign assign_example = "made with assign" %}
+  <p>{{ assign_example }}</p>
+
+  {% comment %} CAPTURE {% endcomment %}
+  {% capture capture_example %}
+    This  block was captured into thid one variable.
+  {% endcapture %}
+  <p>{{ capture_example }}</p>
+
+  {% comment %} INCREMENT / DECREMENT {% endcomment %}
+  <p>
+    increment: {% increment counter1 %} {% increment counter1 %} {% increment counter1 %}
+    ( this oneincrement starts at 0 and alsos has its own memory, so separate this from assign)
+  </p>
+  <p>
+    decrement: {% decrement counter2 %} {% decrement counter2 %} {% decrement counter2 %}
+  </p>
+
+  {% comment %} 5. FILTERS {% endcomment %}
+  
+  <h2>5. Filters</h2>
+
+  {% assign sample_array = "banana, apple, cherry, apple, date" | split: ", " %}
+
+{% comment %} FILTER: first {% endcomment %}
+  <p>first: {{ sample_array.first }}</p>
+
+{% comment %} FILTER: last {% endcomment %}
+  <p>last: {{ sample_array.last }}</p>
+
+{% comment %} FILTER: size {% endcomment %}
+  <p>size: {{ sample_array | size }}</p>
+
+{% comment %} FILTER: join {% endcomment %}
+  <p>join: {{ sample_array | join: " - " }}</p>
+
+{% comment %} FILTER: sort {% endcomment %}
+  <p>sort: {{ sample_array | sort | join: ", " }}</p>
+
+{% comment %} FILTER: uniq {% endcomment %}
+  <p>uniq: {{ sample_array | uniq | join: ", " }}</p>
+
+{% comment %} FILTER: where {% endcomment %}
+  {% if product %}
+    {% assign available_variants = product.variants | where: "available", true %}
+    <p>where (available variants): {{ available_variants.size }}</p>
+  {% else %}
+    <p>where filter needs a real product object, skipping the live example here</p>
+  {% endif %}
+
+  {% comment %} FILTER: map {% endcomment %}
+  {% if collections.all.products.size > 0 %}
+    {% assign product_titles = collections.all.products | map: "title" %}
+    <p>map: {{ product_titles | join: ", " }}</p>
+  {% endif %}
+
+  {% comment %} FILTER: reverse {% endcomment %}
+  <p>reverse: {{ sample_array | reverse | join: ", " }}</p>
+
+  {% comment %} FILTER: concat {% endcomment %}
+  {% assign more_fruit = "fig, grape" | split: ", " %}
+  <p>concat: {{ sample_array | concat: more_fruit | join: ", " }}</p>
+
+  {% comment %} FILTER: upcase {% endcomment %}
+  <p>upcase: {{ "loud text" | upcase }}</p>
+
+  {% comment %} FILTER: downcase {% endcomment %}
+  <p>downcase: {{ "QUIET TEXT" | downcase }}</p>
+
+  {% comment %} FILTER: capitalize {% endcomment %}
+  <p>capitalize: {{ "not capitalized" | capitalize }}</p>
+
+  {% comment %} FILTER: truncate {% endcomment %}
+  <p>truncate: {{ "this sentence is way too long to show in full" | truncate: 20 }}</p>
+
+  {% comment %} FILTER: truncatewords {% endcomment %}
+  <p>truncatewords: {{ "this sentencee is way TOO long to show in full" | truncatewords: 4 }}</p>
+
+  {% comment %} FILTER: split {% endcomment %}
+  <p>split (already used it above to build sample_array,again here): {{ "a-b-c" | split: "-" | join: " / " }}</p>
+
+  {% comment %} FILTER: replace {% endcomment %}
+  <p>replace: {{ "I like cats" | replace: "cats", "dogs" }}</p>
+
+  {% comment %} FILTER: strip_html {% endcomment %}
+  <p>strip_html: {{ "<b>bold text</b>" | strip_html }}</p>
+
+  {% comment %} FILTER: handleize {% endcomment %}
+  <p>handleize: {{ "This Is A Title!" | handleize }}</p>
+
+  {% comment %} FILTER: pluralize {% endcomment %}
+  <p>pluralize: {{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }}</p>
+
+  {% comment %} FILTER: plus {% endcomment %}
+  <p>plus: {{ 4 | plus: 6 }}</p>
+
+  {% comment %} FILTER: minus {% endcomment %}
+  <p>minus: {{ 10 | minus:3 }}</p>
+
+  {% comment %} FILTER: times {% endcomment %}
+  <p>times: {{ 5 | times:3 }}</p>
+
+  {% comment %} FILTER: divided_by {% endcomment %}
+  <p>divided_by: {{ 20 | divided_by: 4 }}</p>
+
+  {% comment %} FILTER: round {% endcomment %}
+  <p>round: {{ 4.6 |round }}</p>
+
+  {% comment %} FILTER: ceil {% endcomment %}
+  <p>ceil: {{ 4.1 | ceil }}</p>
+
+  {% comment %} FILTER: floor {% endcomment %}
+  <p>floor: {{ 4.9 |floor }}</p>
+
+  {% comment %} FILTER: modulo {% endcomment %}
+  <p>modulo: {{ 10 | modulo: 3 }}</p>
+
+  {% comment %} FILTER: at_least {% endcomment %}
+  <p>at_least: {{ 2 | at_least: 5 }}</p>
+
+  {% comment %} FILTER: at_most {% endcomment %}
+  <p>at_most: {{ 8 |at_most: 5 }}</p>
+
+  {% comment %} FILTER: date {% endcomment %}
+  <p>date: {{ "now" | date: "%B %d, %Y" }}</p>
+
+  {% comment %} FILTER: json {% endcomment %}
+  <p>json: {{ sample_array | json }}</p>
+
+  {% comment %} FILTER: money {% endcomment %}
+  <p>money: {{ 1999 | money }}</p>
+
+  {% comment %} FILTER: money_with_currency {% endcomment %}
+  <p>money_with_currency: {{ 1999 | money_with_currency }}</p>
+
+  {% comment %} FILTER: money_without_trailing_zeros {% endcomment %}
+  <p>money_without_trailing_zeros: {{ 2000 | money_without_trailing_zeros }}</p>
+
+  {% comment %} FILTER: link_to {% endcomment %}
+  <p>link_to: {{ 'Shopify homepage' | link_to: 'https://www.shopify.com' }}</p>
+
+  {% comment %} FILTER: script_tag {% endcomment %}
+  {{ 'liquid-playground.js' | asset_url | script_tag }}
+
+  {% comment %} FILTER: stylesheet_tag {% endcomment %}
+  {{ 'liquid-playground.css' | asset_url | stylesheet_tag }}
+
+  {% comment %} FILTER: img_tag {% endcomment %}
+  {% if product and product.featured_image %}
+    {{ product.featured_image | img_tag: "product image" }}
+  {% else %}
+    <p> no real image , so this is skipped </p>
+  {% endif %}
+
+  {% comment %} FILTER: asset_url and asset_img_url {% endcomment %}
+  <p>asset_url: {{ 'liquid-playground.css' | asset_url }}</p>
+  {% if product and product.featured_image %}
+    <img src="{{ product.featured_image | asset_img_url: 'small' }}" alt="asset_img_url example">
+  {% endif %}
+
+  {% comment %} FILTER: default {% endcomment %}
+  {% assign nothing_set = "" %}
+  <p>default: {{ nothing_set | default: "fallback text since nothing_set was blank" }}</p>
+
+  {% comment %} FILTER: color filters {% endcomment %}
+  {% assign playground_color = section.settings.playground_color | default: '#3b82f6' %}
+  <p>original color: {{ playground_color }}</p>
+  <p>color_to_rgb: {{ playground_color | color_to_rgb }}</p>
+  <p>color_lighten: {{ playground_color | color_lighten: 20 }}</p>
+  <p>color_darken: {{ playground_color | color_darken: 20 }}</p>
+  <p>color_contrast: {{ playground_color | color_contrast: '#ffffff' }}</p>
+
+  {% comment %} FILTER: sort_by (collection filter) {% endcomment %}
+  {% if collections.all.products.size > 0 %}
+    {% assign sorted_products = collections.all.products | sort: 'title' %}
+    <p>sort_by/sort example, first product alphabetically: {{ sorted_products.first.title }}</p>
+  {% endif %}
+
+  {% comment %} FILTER: customer_login_link / customer_logout_link {% endcomment %}
+  {% if customer %}
+    {{ 'Log out' | customer_logout_link }}
+  {% else %}
+    {{ 'Log in' | customer_login_link }}
+  {% endif %}
+
+
+  {% comment %} 6.OBJECTS {% endcomment %}
+  
+  <h2>6. Objects</h2>
+
+  {% comment %} PRODUCT OBJECT {% endcomment %}
+  {% if product %}
+    <p>Title: {{ product.title }}</p>
+    <p>Price: {{ product.price | money }}</p>
+    <p>Tags: {{ product.tags | join: ", " }}</p>
+    {% if product.featured_image %}
+      <img src="{{ product.featured_image | img_url: '200x' }}" alt="{{ product.title }}">
+    {% endif %}
+    <p>Handle: {{ product.handle }}</p>
+  {% else %}
+    <p>no product object on this page, might need tp add this section on a product teplate</p>
+  {% endif %}
+
+  {% comment %} COLLECTION OBJECT {% endcomment %}
+  {% if collection %}
+    <p>Collection title: {{ collection.title }}</p>
+    <p>Products count: {{ collection.products_count }}</p>
+  {% else %}
+    <p>no collection object here, showing collections.all instead:</p>
+    <p>Total products in store: {{ collections.all.products_count }}</p>
+  {% endif %}
+
+  {% comment %} CART OBJECT {% endcomment %}
+  <p>Cart item count: {{ cart.item_count }}</p>
+  <p>Cart total: {{ cart.total_price | money }}</p>
+
+  {% comment %} SHOP OBJECT {% endcomment %}
+  <p>Shop name: {{ shop.name }}</p>
+  <p>Shop currency: {{ shop.currency }}</p>
+
+  {% comment %} SECTION SETTINGS, BLOCKS {% endcomment %}
+  <p>Heading setting from schema: {{ section.settings.playground_heading }}</p>
+  {% for block in section.blocks %}
+     <div {{ block.shopify_attributes }}>
+      <p>Block text: {{ block.settings.block_text }}</p>
+</div>
+{% endfor %}
+
+</div>
+{% comment %} STYLE TAG (uses a theme setting variable) {% endcomment %}
+{% style %}
+  .liquid-playground {
+    color: {{ playground_color }};
+    padding: 20px;
+  }
+  .row-odd {
+    background: #f4f4f4;
+  }
+.row-even {
+background: #ffffff;
+  }
+{% endstyle %}
+{% stylesheet %}
+  .liquid-playground h2 {
+border-bottom: 1px solid #ccc;
+    margin-top: 30px;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  console.log('liquid-playground section loaded');
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Liquid Playground",
+  "settings": [
+    {
+      "type": "text",
+      "id": "playground_heading",
+      "label": "Heading",
+      "default": "Playground heading from schema"
+    },
+    {
+      "type": "color",
+      "id": "playground_color",
+      "label": "Playground color",
+      "default":"#3b82f6"
+    }
+  ],
+  "blocks": [
+    {
+    "type": "text_block",
+      "name":"Text block",
+    "settings": [
+        {
+          "type": "text",
+          "id": "block_text",
+          "label": "Block text",
+          "default": "This is a block, added through the theme editor"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+    "name": "Liquid Playground",
+      "blocks": [
+        { "type":"text_block"}
+      ]
+    }
+  ]
+}
+{%  endschema  %}
