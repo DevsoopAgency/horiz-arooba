@@ -1,0 +1,13 @@
+{% comment %}
+  This is just a basic snippet so I can show the render tag's work.
+  itt just prints out whatever gets passed to it.
+{% endcomment %}
+
+<div class="liquid-demo-snippet">
+  <p>This text is coming from snippets/liquid-demo.liquid</p>
+{% if message %}
+    <p>Message passed in: {{ message }}</p>
+  {% else %}
+    <p>No message was passed</p>
+  {% endif %}
+</div>
